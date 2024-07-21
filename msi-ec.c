@@ -2260,7 +2260,7 @@ static char *firmware = NULL;
 module_param(firmware, charp, 0);
 MODULE_PARM_DESC(firmware, "Load a configuration for a specified firmware version");
 
-static bool debug = false;
+static bool debug = true;
 module_param(debug, bool, 0);
 MODULE_PARM_DESC(debug, "Load the driver in the debug mode, exporting the debug attributes");
 
