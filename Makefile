@@ -1,7 +1,7 @@
 VERSION         := 0.08
 DKMS_ROOT_PATH  := /usr/src/msi_ec-$(VERSION)
 
-ccflags-y := -std=gnu11 -Wno-declaration-after-statement
+ccflags-y := -std=gnu11 -Wno-declaration-after-statement -Wno-incompatible-pointer-types
 
 obj-m += msi-ec.o
 
