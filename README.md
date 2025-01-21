@@ -4,12 +4,24 @@
 
 This driver might not work on other laptops produced by MSI. Use it at your own risk, we are not responsible for any damage suffered.
 
-Also, and until future enhancements, no DMI data is used to identify your laptop model. In the meantime, check the msi-ec.c file before using.
+Also, and until future enhancements, no DMI data is used to identify your laptop model. In the meantime, check the list of supported devices and the msi-ec.c file before using.
+
+The driver has no effect on ACPI, so if you have any ACPI errors, the driver can't fix them; consider extracting the ACPI tables and/or following the [Arch wiki](https://wiki.archlinux.org/title/DSDT)
+
+You might want to use a graphical interface instead of executing commands to use the driver: [MControlCenter](https://github.com/dmitry-s93/MControlCenter). 
 
 
 ## Supported devices
 
 Check if your device is supported before attempting to install and use the driver. The list of supported devices can be found [here](docs/supported_devices.md).
+
+Can't find your device in the list? Check the contribution guides and open a new issue.
+
+## Contribute
+Eager to support the project? Your help is always welcome to keep the project alive and going!
+- Read how to add support for your device and get the necessary information on Windows and Linux in [this guide](docs/device_support_guide.md).
+- Get solutions for common MSI laptop problems (ACPI errors, slow charger detection,...) and submit fixes if you have any in this [discussion](https://github.com/BeardOverflow/msi-ec/discussions/130#).
+- If you want to go deeper: [read into this discussion regarding EC firmware naming patterns](https://github.com/BeardOverflow/msi-ec/discussions/98).
 
 
 ## Installation
@@ -24,8 +36,7 @@ Check if your device is supported before attempting to install and use the drive
    - For Fedora: `sudo dnf install kernel-devel`
    - For Arch:   `sudo pacman -S --needed base-devel linux-headers`
 2. Clone this repository and cd to it: `git clone https://github.com/BeardOverflow/msi-ec && cd msi-ec`   
-3. (Linux < 6.2 only, verify with `uname -r`): `make older-kernel-patch`
-4. Choose one of the following installation methods
+3. Choose one of the following installation methods
 
 #### (Recommended) Installation using [DKMS](https://en.wikipedia.org/wiki/Dynamic_Kernel_Module_Support):
 
@@ -43,11 +54,34 @@ Check if your device is supported before attempting to install and use the drive
 1. Install any AUR helper ([yay](https://github.com/Jguer/yay) for example)
 2. Run `yay -S msi-ec-git`
 
+### On NixOS
+The driver is packaged on `nixos-unstable` under the name
+`linuxKernel.packages.<kernel>.msi-ec`.
+```nix
+# In your config
+
+{
+	# ...
+	boot.kernelPackages = pkgs.linuxPackages_latest // {
+		# Replace linux_6_6 by your actual kernel
+		msi-ec = linuxKernel.packages.linux_6_6.msi-ec;
+	};
+
+	boot.kernelModules = [
+		# ...
+
+		"msi-ec"
+
+		# ...
+	];
+}
+```
+
 
 ## Current Support in the Kernel
 
 Features already merged in kernel 6.4 and up:
-- Battery threshols
+- Battery thresholds
 
 Still not merged:
 - Enable/Disable webcam
@@ -244,8 +278,3 @@ You can use `make load-debug` command to load the module in the debug mode after
 
 Set this parameter to a supported EC firmware version to use its configuration and test if it is compatible with your EC.
 **Please verify that the attributes return the correct data before attempting to write into them!**
-
-## Contribute
-Eager to support the project? Your help is always welcome to keep the project alive and going! 
-   - Checkout the relevant [wiki article](https://github.com/BeardOverflow/msi-ec/wiki/Contributing).
-   - If you want to go deeper: [read into this discussion regarding ec firmware naming patterns](https://github.com/BeardOverflow/msi-ec/discussions/98).
